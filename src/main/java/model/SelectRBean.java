@@ -22,22 +22,24 @@ public class SelectRBean implements Serializable {
     public void setValue(Double value) {
         this.value = value;
         FacesContext.getCurrentInstance().getPartialViewContext().getEvalScripts()
-                .add("drawGraphByR(" + (value == null ? 0 : value) + ");");
+                .add("removeErrorMessage()");
+        if (value!=null) {
+            FacesContext.getCurrentInstance().getPartialViewContext().getEvalScripts()
+                    .add("resize("+value+")");
+            FacesContext.getCurrentInstance().getPartialViewContext().getEvalScripts()
+                    .add("drawGraphByR(" + value + ");");
+        }
     }
 
     public void validateSelectR(FacesContext facesContext,
                                 UIComponent uiComponent, Object o) {
         if (o == null) {
             value = null;
-            FacesContext.getCurrentInstance().getPartialViewContext().getEvalScripts()
-                    .add("drawGraphByR(0);");
             FacesMessage message = new FacesMessage("Please, input R!");
             throw new ValidatorException(message);
         }
         if ((double) o < 2 || (double) o > 5) {
             value = null;
-            FacesContext.getCurrentInstance().getPartialViewContext().getEvalScripts()
-                    .add("drawGraphByR(0);");
             FacesMessage message = new FacesMessage("R must be between 2 and 5!");
             throw new ValidatorException(message);
         }

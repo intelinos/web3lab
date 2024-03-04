@@ -1,8 +1,8 @@
 package db;
 
 import model.CheckAreaBean;
-import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -69,9 +69,9 @@ public class CheckAreaDAOImpl implements CheckAreaDAO {
         List<CheckAreaBean> results;
         try {
             session = HibernateUtils.getFactory().openSession();
-            var criteriaQuery = session.getCriteriaBuilder().createQuery(CheckAreaBean.class);
-            Root<CheckAreaBean> root = criteriaQuery.from(CheckAreaBean.class);
-            results = session.createQuery(criteriaQuery.select(root)).getResultList();
+            String hqlQuery = "FROM CheckAreaBean";
+            Query<CheckAreaBean> query = session.createQuery(hqlQuery, CheckAreaBean.class);
+            results = query.getResultList();
         } catch (Throwable e) {
             System.err.println("Something went wrong in DAO: " + e);
             throw new SQLException(e);
@@ -109,7 +109,7 @@ public class CheckAreaDAOImpl implements CheckAreaDAO {
             session = HibernateUtils.getFactory().openSession();
             session.beginTransaction();
             String sql = "delete from " + TABLE_NAME;
-            session.createNativeQuery(sql, this.getClass()).executeUpdate();
+            session.createNativeQuery(sql, CheckAreaBean.class).executeUpdate();
             session.getTransaction().commit();
         } catch (Throwable e) {
             System.err.println("Something went wrong in DAO: " + e);

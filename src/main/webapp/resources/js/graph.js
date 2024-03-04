@@ -1,7 +1,6 @@
 let pointId = 0;
 let points = new Map();
-let graph_click_enabled = false;
-//const enable_graph_button = document.getElementById('enable-graph');
+
 const elt = document.getElementById('graph');
 const calculator = Desmos.GraphingCalculator(elt, {
     keypad: false,
@@ -29,7 +28,9 @@ calculator.setDefaultState(newDefaultState);
 let prevR;
 function drawGraphByR(r) {
     prevR=r;
-
+    for (let i = 0; i < pointId; i++) {
+            calculator.removeExpression({id: 'point' + i});
+        }
     points.forEach((v,k) => {
         drawPointXYRResID(v.x, v.y, v.r, v.result, k);
     });
@@ -67,13 +68,15 @@ $("#r_text").on("input", function(event) {
     prevR = $("#r_text").val();
     console.log(44444);
     console.log(prevR);
-    drawGraphByR(prevR);
+    // removeErrorMessage();
+    //drawGraphByR(prevR);
 });
 function drawPointXYRRes(x, y, r, result) {
     if (r === undefined)
         r = 0;
     points.set('point' + pointId, {x, y, r, result})
     prevR=r;
+
     calculator.setExpression({
         id: 'point' + pointId++,
         latex: '(' + x + ', ' + y + ')',
@@ -88,7 +91,7 @@ function drawPointXYRResID(x, y, r, result, point_id) {
         calculator.setExpression({
             id: point_id,
             latex: '(' + x + ', ' + y + ')',
-            color: result ? Desmos.Colors.PURPLE : Desmos.Colors.BLUE
+            color: result ? Desmos.Colors.GREEN : Desmos.Colors.BLUE
         });
     }
 }
@@ -107,7 +110,21 @@ elt.addEventListener('click', handleGraphClick);
 
 function createErrorMessage(message) {
     let error_block = document.getElementById("error_block");
+    let error_message_block = document.getElementById("error");
+        if (error_message_block != null) {
+            return;
+        }
     error_block.innerHTML = "<p id='error'>"+message+"</p>";
+}
+
+function resize(R){
+    for (let i = 0; i < pointId; i++) {
+        let res = points.get('point' + i);
+        res.x = (res.x * R) / res.r;
+        res.y = (res.y * R) / res.r;
+        res.r = R;
+    }
+    drawGraphByR(R);
 }
 
 function removeErrorMessage() {
@@ -121,8 +138,8 @@ function handleGraphClick (evt) {
     /*if ($("#r_text").val()==null){
             createErrorMessage("Select R before pointing at the graph!");
             return;
-        }
-        removeErrorMessage();*/
+    }*/
+    //removeErrorMessage();
     const rect = elt.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;

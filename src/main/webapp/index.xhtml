@@ -12,11 +12,6 @@
     <meta http-equiv="Content-Type" content="text/html" />
     <h:outputStylesheet library="css" name="style.css" />
     <title>Лабораторная работа №3 | Веб-программирование</title>
-    <style type="text/css">
-        .ui-analog-clock {
-            width: 200px;
-        }
-    </style>
 </h:head>
 
 <h:body>
@@ -31,7 +26,7 @@
                     <p>
                         Current time: <h:outputText id="updateable-time" value="#{timeBean.nowTime}" />
                     </p>
-
+                    <p:clock displayMode="analog" mode="server" />
                 </h:form>
                 <h:form id="hiddenForm" style="display:none">
                     <h:commandButton id="updatePresentDateTime">

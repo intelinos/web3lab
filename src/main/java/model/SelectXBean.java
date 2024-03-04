@@ -6,6 +6,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.ValidatorException;
 import jakarta.inject.Named;
+import org.primefaces.event.SlideEndEvent;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.Objects;
 @SessionScoped
 public class SelectXBean implements Serializable {
 
-    private double value;
+    private double value = 0;
 
     public void setValue(double value) {this.value = value;}
     public double getValue() {
@@ -31,11 +32,14 @@ public class SelectXBean implements Serializable {
         if ((double) o != -2 && (double) o != -1.5 && (double) o != -1 && (double) o != -0.5 &&
                 (double) o != 0 && (double) o != 0.5 && (double) o != 1 && (double) o != 1.5 &&
                 (double) o != 2 ) {
-            FacesMessage message = new FacesMessage("Y must be between -5 and 3!");
+            FacesMessage message = new FacesMessage("X must be between -2 and 2!");
             throw new ValidatorException(message);
         }
     }
 
+    public void onSlideEndX(SlideEndEvent event){
+        this.value = Double.parseDouble(String.valueOf(event.getValue())) ;
+    }
 
     @Override
     public boolean equals(Object o) {

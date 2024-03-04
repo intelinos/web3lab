@@ -45,7 +45,11 @@ public class CheckAreaResultsBean implements Serializable {
     }
 
     public void newResult(final double x, final double y, final double r) {
-
+        if (r == 0){
+            FacesContext.getCurrentInstance().getPartialViewContext().getEvalScripts().add("createErrorMessage(\"Select R before pointing at the graph!\");");
+            return;
+        }
+        FacesContext.getCurrentInstance().getPartialViewContext().getEvalScripts().add("removeErrorMessage()");
         final CheckAreaBean currentResult = new CheckAreaBean();
         final boolean result = AreaResultChecker.getResult(x, y, r);
         currentResult.setX(x);
